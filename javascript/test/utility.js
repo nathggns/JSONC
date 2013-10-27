@@ -1,44 +1,85 @@
-var JSONC  = require('../jsonc.js');
-var should = require('should');
+/* global describe: true, it: true */
+
+var JSONC    = require('../jsonc.js');
+
+require('should');
 
 describe('JSONC', function() {
 
-  describe('utility', function() {
+    'use strict';
 
-    describe('isCyclic', function() {
+    describe('utility', function() {
 
-      it('should return true for cyclic structures', function() {
+        describe('getCyclicProperties', function() {
 
-        var structure = {
-          a: {
-            b: {
-              c: 'd'
-            }
-          }
-        };
+            it('should get cylic properties', function() {
+                var structure = {
+                    a: {
+                        b: {
+                            c: 'd'
+                        }
+                    }
+                };
 
-        structure.a.b.e = structure.a.b;
+                structure.a.b.e = structure.a.b;
 
-        JSONC.utility.isCylcic(structure).should.eql(true);
+                JSONC.utility.getCyclicProperties(structure).should.eql([
+                    'a.b.e'
+                ]);
+            });
 
-      });
+            it('should get return empty array when not cyclic', function() {
+                var structure = {
+                    a: {
+                        b: {
+                            c: 'd'
+                        }
+                    }
+                };
 
-      it('should return false for non-cyclic structures', function() {
+                structure.a.b.e = structure.a.b;
 
-        var structure = {
-          a: {
-            b: {
-              c: 'd'
-            }
-          }
-        };
+                JSONC.utility.getCyclicProperties(structure).should.eql([
+                    'a.b.e'
+                ]);
+            });
 
-        JSONC.utility.isCyclic(structure).should.eql(false);
+        });
 
-      });
+        describe('isCyclic', function() {
+
+            it('should return true for cyclic structures', function() {
+
+                var structure = {
+                    a: {
+                        b: {
+                            c: 'd'
+                        }
+                    }
+                };
+
+                structure.a.b.e = structure.a.b;
+
+                JSONC.utility.isCyclic(structure).should.eql(true);
+
+            });
+
+            it('should return false for non-cyclic structures', function() {
+
+                var structure = {
+                    a: {
+                        b: {
+                            c: 'd'
+                        }
+                    }
+                };
+
+                JSONC.utility.isCyclic(structure).should.eql(false);
+
+            });
+
+        });
 
     });
-
-  });
 
 });
